@@ -1,7 +1,7 @@
 from scapy.all import *
 import datetime
 
-pk = sniff(count = 20)
+pk = sniff(filter="host 34.79.222.182")
 
 count = 1
 for p in pk:
