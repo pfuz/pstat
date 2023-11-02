@@ -3,3 +3,7 @@
 /dist/
 
 /build/
+
+output.json
+
+processes.txt

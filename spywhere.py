@@ -4,6 +4,7 @@ import socket
 from socket import AF_INET
 from socket import SOCK_DGRAM
 from socket import SOCK_STREAM
+from functools import lru_cache
 
 import psutil
 import requests
@@ -16,6 +17,9 @@ import threading
 import os
 import sys
 import traceback
+import yaml
+import datetime
+import json
 
 AD = "-"
 AF_INET6 = getattr(socket, 'AF_INET6', object())
@@ -38,9 +42,30 @@ WHITELISTED_APPS = []
 
 PRIVATE_IP = ["10", "172", "198", "127"]
 
-VIRUSTOTAL_API_KEY = "5df8d97dd0dc875d1caa23c90ad77f4c6382094c94449f0b3dec654c0b8d44a4"
+VIRUSTOTAL_API_KEY = ""
 
 PROCESS_LIST = []
+
+def load_yaml_configs():
+    global VIRUSTOTAL_API_KEY
+    try:
+        with open("config.yaml", 'r') as f:
+            data = yaml.safe_load(f)
+        flag = False
+        if data["VIRUSTOTAL_API_KEY"]:
+            VIRUSTOTAL_API_KEY = data["VIRUSTOTAL_API_KEY"]
+            flag = True
+
+        if flag:
+            return True
+        else:
+            return False
+    except Exception as error:
+        print("error")
+        f = open("error.log", 'a')
+        f.write(str(error))
+        traceback.print_exc()
+
 
 def load_whitelisted_app_list():
     f = open('processes.txt', 'r')
@@ -51,6 +76,7 @@ def load_whitelisted_app_list():
 
 VIRUSTOTAL_HASH_RESULTS = {}
 
+@lru_cache
 def get_virustotal_analysis(hash):
 
     if hash in VIRUSTOTAL_HASH_RESULTS.keys():
@@ -59,13 +85,15 @@ def get_virustotal_analysis(hash):
         url = f"https://www.virustotal.com/api/v3/files/{hash}"
         headers = {"accept": "application/json", "x-apikey": VIRUSTOTAL_API_KEY}
         response = requests.get(url, headers=headers)
-        VIRUSTOTAL_HASH_RESULTS[hash] = response.json()
-        return response.json()
+        data = response.json()
+        last_analysis = data["data"]["attributes"]["last_analysis_stats"]
+        VIRUSTOTAL_HASH_RESULTS[hash] = last_analysis
+        return last_analysis
 
 
 def generate_file_hash(file):
     try:
-        h = hashlib.sha1()
+        h = hashlib.sha256()
         with open(file, 'rb') as f:
 
             chunk = 0
@@ -163,7 +191,8 @@ def check_net_connections():
                     "pid": c.pid or AD,
                     "name": name,
                     "exe_path" : path,
-                    "hostname": socket.gethostname()
+                    "hostname": socket.gethostname(),
+                    "timestamp": str(datetime.datetime.now())
                 }
                 return dict
     
@@ -176,12 +205,30 @@ def main():
     print("\n")
     print("[+]  Checking for the active TCP/IP and UDP connections......")
     print("\n")
-    load_whitelisted_app_list()
-    while True:
-        output = check_net_connections()
-        stats = get_process_stats(output)
-        if stats:
-            print("Output: ", stats)
+    if load_yaml_configs():
+        load_whitelisted_app_list()
+        while True:
+            output = check_net_connections()
+            stats = get_process_stats(output)
+            if stats:
+                    try:
+                        with open("output.json", encoding='utf8') as f:
+                            file = f.read()
+                            data = json.loads(file)
+                    except json.JSONDecodeError:
+                        data = []
+                    except Exception as error:
+                        f = open("error.log", 'a')
+                        f.write(str(error))
+                        f.close()
+
+                    data.append(stats)
+                    with open("output.json", 'w', encoding='utf-8') as file:
+                        json.dump(data, file, ensure_ascii=False, indent=4)
+
+
+    else:
+        print("Configs are not given")
 
 
 if __name__ == '__main__':
