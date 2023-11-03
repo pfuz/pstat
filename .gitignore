@@ -1,9 +1,5 @@
 /env
-
 /dist/
-
 /build/
-
-output.json
-
-processes.txt
+*.json
+*.log
