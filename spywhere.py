@@ -117,7 +117,7 @@ def check_running_processes():
         try:
             process = psutil.Process(p.info['pid'])
             executable_path = process.exe()
-            f = open("processes.txt", "a")
+            f = open("whitelisted-apps", "a")
             f.write(executable_path + "\n")
             f.close()
         except psutil.AccessDenied:
