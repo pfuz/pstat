@@ -68,7 +68,7 @@ def load_yaml_configs():
 
 
 def load_whitelisted_app_list():
-    f = open('processes.txt', 'r')
+    f = open('whitelisted-apps', 'r')
     for x in f:
         WHITELISTED_APPS.append(x.strip())
     return None
