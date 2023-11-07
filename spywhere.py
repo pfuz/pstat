@@ -8,9 +8,7 @@ from functools import lru_cache
 
 import psutil
 import requests
-import logging
 import pyuac
-import time
 import hashlib
 import pyfiglet
 import threading
