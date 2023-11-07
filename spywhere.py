@@ -198,7 +198,7 @@ def check_net_connections():
     
 
 def main():
-    title = pyfiglet.figlet_format('Netstats', font="slant")
+    title = pyfiglet.figlet_format('', font="slant")
     print("######################################################")
     print(title)
     print("########################################################")
