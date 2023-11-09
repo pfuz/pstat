@@ -18,6 +18,8 @@ import traceback
 import yaml
 import datetime
 import json
+import logging
+import textwrap
 
 AD = "-"
 AF_INET6 = getattr(socket, 'AF_INET6', object())
@@ -38,7 +40,7 @@ GEOIP_REDLIST_ZONES = [
 
 WHITELISTED_APPS = []
 
-PRIVATE_IP = ["10", "172", "198", "127"]
+PRIVATE_IP = ["10", "172", "192", "127"]
 
 VIRUSTOTAL_API_KEY = ""
 
@@ -129,6 +131,7 @@ IP = []
 HASHES = {}
 
 def get_process_stats(dict):
+    templ = "%-30s %-10s %-20s %-24s %-10s %-30s"
     try:
         if dict['pid'] in ID and dict["dest_ip"] in IP:
             return None
@@ -141,7 +144,8 @@ def get_process_stats(dict):
                     dict["whois"] = whois
                     dict["hash"] = HASHES[dict["name"]]
                     IP.append(dict["dest_ip"])
-                    print("1 Worked")
+                    country = whois['country'] if 'country' in whois else '#N/A'
+                    print(templ % (str(datetime.datetime.now()), dict['pid'], textwrap.fill(dict['name'],20),dict['dest_ip'], country, dict['exe_path']))
                     return dict
         else:
             hash = generate_file_hash(dict["exe_path"])
@@ -154,12 +158,14 @@ def get_process_stats(dict):
             dict["whois"] = whois
             ID.append(dict["pid"])
             IP.append(dict["dest_ip"])
-            print("2 worked")
+            country = whois['country'] if 'country' in whois else '#N/A'
+            print(templ % (str(datetime.datetime.now()), dict['pid'], textwrap.fill(dict['name'],20), dict['dest_ip'], country, dict['exe_path']))
             return dict
 
     except Exception as error:
         traceback.print_exc()
-        print(error)
+        with open("error.log", "a") as f:
+            f.write(str(error))
         return str(error)
 
 
@@ -196,13 +202,13 @@ def check_net_connections():
     
 
 def main():
-    title = pyfiglet.figlet_format('', font="slant")
-    print("######################################################")
+    templ = "%-30s %-10s %-20s %-24s %-10s %-30s"
+    title = pyfiglet.figlet_format("PStat", font="slant")
     print(title)
-    print("########################################################")
-    print("\n")
     print("[+]  Checking for the active TCP/IP and UDP connections......")
+    print("[+]  Output File: output.json")
     print("\n")
+    print(templ % ("Timestamp", "PID", "Process Name", "Destination IP", "Country", "File Path"))
     if load_yaml_configs():
         load_whitelisted_app_list()
         while True:
@@ -236,7 +242,6 @@ if __name__ == '__main__':
             pyuac.runAsAdmin()
         else:        
             main()
-            # check_running_processes()
     except KeyboardInterrupt:
         pass
     except SystemExit:
