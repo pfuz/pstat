@@ -19,7 +19,6 @@ import yaml
 import datetime
 import json
 import logging
-import textwrap
 
 AD = "-"
 AF_INET6 = getattr(socket, 'AF_INET6', object())
@@ -145,7 +144,7 @@ def get_process_stats(dict):
                     dict["hash"] = HASHES[dict["name"]]
                     IP.append(dict["dest_ip"])
                     country = whois['country'] if 'country' in whois else '#N/A'
-                    print(templ % (str(datetime.datetime.now()), dict['pid'], textwrap.fill(dict['name'],20),dict['dest_ip'], country, dict['exe_path']))
+                    print(templ % (str(datetime.datetime.now()), dict['pid'], dict['name'], dict['dest_ip'], country, dict['exe_path']))
                     return dict
         else:
             hash = generate_file_hash(dict["exe_path"])
@@ -159,7 +158,7 @@ def get_process_stats(dict):
             ID.append(dict["pid"])
             IP.append(dict["dest_ip"])
             country = whois['country'] if 'country' in whois else '#N/A'
-            print(templ % (str(datetime.datetime.now()), dict['pid'], textwrap.fill(dict['name'],20), dict['dest_ip'], country, dict['exe_path']))
+            print(templ % (str(datetime.datetime.now()), dict['pid'], dict['name'], dict['dest_ip'], country, dict['exe_path']))
             return dict
 
     except Exception as error:
@@ -203,7 +202,7 @@ def check_net_connections():
 
 def main():
     templ = "%-30s %-10s %-20s %-24s %-10s %-30s"
-    title = pyfiglet.figlet_format("PStat", font="slant")
+    title = pyfiglet.figlet_format("PSTAT", font='doom')
     print(title)
     print("[+]  Checking for the active TCP/IP and UDP connections......")
     print("[+]  Output File: output.json")
