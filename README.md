@@ -3,8 +3,7 @@
 
 `PSTAT` is a process monitoring tool designed to monitor the TCP and UDP connections initiated by unknown processes on a system. It provides a comprehensive view of network activities, conducts WHOIS lookups for remote IP addresses, and checks the VirusTotal analysis of the associated processes.
 
-![main image](https://github.com/pfuz/pstat/blob/master/static/images/head-image.png)
-
+![head image](https://github.com/pfuz/pstat/blob/master/static/images/head-image.png)
 
 
 
@@ -25,11 +24,52 @@ Fill all the necessary fields in `config.yaml` file and run the below command to
 python pstat.py
 ```
 Check `output.json` for detailed output.
+```json
+{
+        "protocol": "tcp",
+        "src_ip": "192.XXX.X.XXX:51656",
+        "dest_ip": "20.189.173.1:443",
+        "status": "ESTABLISHED",
+        "pid": 11008,
+        "name": "Code.exe",
+        "exe_path": "C:\\Users\\Kartheek\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+        "hostname": "LAPTOP-H83OUG43",
+        "timestamp": "2023-11-17 13:43:01.627840",
+        "hash": "e29f03f51ec76170e1ed1db6229211b77c5463b989713977e6f12a30839134f6",
+        "virustotal_analysis": {
+            "harmless": 0,
+            "type-unsupported": 6,
+            "suspicious": 0,
+            "confirmed-timeout": 0,
+            "timeout": 0,
+            "failure": 0,
+            "malicious": 0,
+            "undetected": 70
+        },
+        "whois": {
+            "ip": "20.189.173.1",
+            "city": "San Jose",
+            "region": "California",
+            "country": "US",
+            "loc": "37.3394,-121.8950",
+            "org": "AS8075 Microsoft Corporation",
+            "postal": "95103",
+            "timezone": "America/Los_Angeles",
+            "readme": "https://ipinfo.io/missingauth"
+        }
+}
+```
 ## Disclaimer
 This tool requires admin privileges to run and will prompts you to approve the access.
 ## OS Requirements
 
 This tool is tested in Windows 11.
+## Main Features
+
+- Performs a basic WHOIS lookup for the remote IP.
+- Gets the Virustotal results for applications.
+
+
 ## Note
 This tool is still in active development and may have some bugs.
 ## License
