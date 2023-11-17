@@ -68,7 +68,7 @@ def load_whitelisted_app_list():
     f = open('whitelisted-apps', 'r')
     for x in f:
         WHITELISTED_APPS.append(x.strip())
-    return None
+    return True
 
 
 VIRUSTOTAL_HASH_RESULTS = {}
@@ -206,10 +206,11 @@ def main():
     print(title)
     print("[+]  Checking for the active TCP/IP and UDP connections......")
     print("[+]  Output File: output.json")
-    print("\n")
-    print(templ % ("Timestamp", "PID", "Process Name", "Destination IP", "Country", "File Path"))
-    if load_yaml_configs():
-        load_whitelisted_app_list()
+    if load_yaml_configs() and load_whitelisted_app_list():
+        print("[+]  Loaded configurations from 'config.yaml'")
+        print("[+]  Loaded whitelisted application paths from 'whitelisted-apps' file")
+        print("\n")
+        print(templ % ("Timestamp", "PID", "Process Name", "Destination IP", "Country", "File Path"))
         while True:
             output = check_net_connections()
             stats = get_process_stats(output)
