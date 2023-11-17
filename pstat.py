@@ -142,7 +142,8 @@ def get_process_stats(dict):
                     dict["hash"] = HASHES[dict["name"]]
                     IP.append(dict["dest_ip"])
                     country = whois['country'] if 'country' in whois else '#N/A'
-                    print(templ % (str(datetime.datetime.now()), dict['pid'], dict['name'], dict['dest_ip'], country, dict['exe_path']))
+                    name = dict['name'][0:15] + '...' if len(dict['name']) > 16 else dict['name']
+                    print(templ % (str(datetime.datetime.now()), dict['pid'], name, dict['dest_ip'], country, dict['exe_path']))
                     return dict
         else:
             hash = generate_file_hash(dict["exe_path"])
@@ -156,7 +157,8 @@ def get_process_stats(dict):
             ID.append(dict["pid"])
             IP.append(dict["dest_ip"])
             country = whois['country'] if 'country' in whois else '#N/A'
-            print(templ % (str(datetime.datetime.now()), dict['pid'], dict['name'], dict['dest_ip'], country, dict['exe_path']))
+            name = dict['name'][0:15] + '...' if len(dict['name']) > 16 else dict['name']
+            print(templ % (str(datetime.datetime.now()), dict['pid'], name, dict['dest_ip'], country, dict['exe_path']))
             return dict
 
     except Exception as error:
