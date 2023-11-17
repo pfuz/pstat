@@ -3,7 +3,7 @@
 
 `PSTAT` is a process monitoring tool designed to monitor the TCP and UDP connections initiated by unknown processes on a system. It provides a comprehensive view of network activities, conducts WHOIS lookups for remote IP addresses, and checks the VirusTotal analysis of the associated processes.
 
-![main image](https://github.com/pfuz/quipo-dev/static/images/head-image.png)
+![main image](https://github.com/pfuz/pstat/blob/master/static/images/head-image.png)
 
 
 
