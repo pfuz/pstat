@@ -20,6 +20,8 @@ import datetime
 import json
 import logging
 
+logging.basicConfig(filename="pstat.log", level=logging.DEBUG)
+
 AD = "-"
 AF_INET6 = getattr(socket, 'AF_INET6', object())
 proto_map = {
@@ -29,17 +31,13 @@ proto_map = {
     (AF_INET6, SOCK_DGRAM): 'udp6',
 }
 
-GEOIP_WHITELIST_ZONES = [
-    'US', 'IN'
-]
+GEOIP_WHITELIST_ZONES = []
 
-GEOIP_REDLIST_ZONES = [
-    'CN', 'CHN', 'RU', 'KP'
-]
+GEOIP_REDLIST_ZONES = []
 
 WHITELISTED_APPS = []
 
-PRIVATE_IP = ["10", "172", "192", "127"]
+PRIVATE_IP = []
 
 VIRUSTOTAL_API_KEY = ""
 
@@ -47,23 +45,23 @@ PROCESS_LIST = []
 
 def load_yaml_configs():
     global VIRUSTOTAL_API_KEY
+    global GEOIP_WHITELIST_ZONES
+    global GEOIP_REDLIST_ZONES
+    global PRIVATE_IP
     try:
         with open("config.yaml", 'r') as f:
             data = yaml.safe_load(f)
-        flag = False
-        if data["VIRUSTOTAL_API_KEY"]:
-            VIRUSTOTAL_API_KEY = data["VIRUSTOTAL_API_KEY"]
-            flag = True
-
-        if flag:
-            return True
-        else:
-            return False
-    except Exception as error:
-        print("error")
-        f = open("error.log", 'a')
-        f.write(str(error))
-        traceback.print_exc()
+        VIRUSTOTAL_API_KEY = data["VIRUSTOTAL_API_KEY"]
+        GEOIP_WHITELIST_ZONES = data["GEOIP_WHITELIST_ZONES"]
+        GEOIP_REDLIST_ZONES = data["GEOIP_REDLIST_ZONES"]
+        PRIVATE_IP = data["PRIVATE_IP"]
+        return True
+    except yaml.YAMLError as err:
+        logging.error(str(err))
+    except KeyError as error:
+        logging.error(str(error))
+    except ValueError as error:
+        logging.error(str(error))
 
 
 def load_whitelisted_app_list():
