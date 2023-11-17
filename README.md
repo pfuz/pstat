@@ -33,7 +33,7 @@ Check `output.json` for detailed output.
         "pid": 11008,
         "name": "Code.exe",
         "exe_path": "C:\\Users\\pfuz\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
-        "hostname": "LAPTOP-H83OUG43",
+        "hostname": "PFUZ-COMPUTER",
         "timestamp": "2023-11-17 13:43:01.627840",
         "hash": "e29f03f51ec76170e1ed1db6229211b77c5463b989713977e6f12a30839134f6",
         "virustotal_analysis": {
