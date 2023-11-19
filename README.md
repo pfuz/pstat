@@ -7,12 +7,12 @@
 
 
 
-## Installation
+## Installation (Windows 11)
 
 Clone the repository. Create a virutal environment and install all the required dependencies.
 
 ```bash
-git clone
+git clone https://github.com/pfuz/pstat.git
 cd pstat
 python -m venv env
 .\env\scripts\activate
